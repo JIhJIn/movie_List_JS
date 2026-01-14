@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <h1>영화 목록</h1>
+    <div>
+        <input type="text" id="movieSearch" onkeyup="movieSearch()"/>
+    </div>
+    <div>
+        <button id="netflixButton">넷플릭스 영화만 보기</button>
+        <button id="entireMovieButton">전체 영화 보기</button>
+        <button id="lowestRating">평점 낮은 순</button>
+        <button id="highestRating">평점 높은 순</button>
+    </div>
+    <ul id="movieList"></ul>
+</body>
+    <script src="script.js"></script>
+</html>
