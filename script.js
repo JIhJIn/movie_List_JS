@@ -6,6 +6,29 @@ const movies = [
     { title: "The Dark Knight", rating: 9.0, year: 2008, isNetflix: true }
 ]
 
+//상태 관리 객체
+const state = {
+    netflixOnly : false,
+    sortType : null,
+    searchKeyword : ""
+}
+
+function setNetfilxOnly(value) {
+    state.netflixOnly = value
+    updateView()
+}
+
+function setSortType(type) {
+    state.sortType = type
+    updateView()
+}
+
+function setSearchKeyword(keyword) {
+    state.searchKeyword = keyword
+    updateView()
+}
+
+
 //영화 목록 렌더링 함수
 function renderMovies(movie) {
     const list = document.querySelector("#movieList")
@@ -27,43 +50,65 @@ function renderMovies(movie) {
     });
 }
 
-let currentMovies = movies
+
+// 계산 함수
+function updateView() {
+    let result = movies
+    
+    //넷플릭스 영화 버튼(true)/전체 영화 버튼(false)
+    if(state.netflixOnly) {
+        result = result.filter((movie) => movie.isNetflix)
+    }
+
+    //평점 높은순 버튼
+    if(state.sortType === "ascending") {
+        result = result.slice().sort((a,b) => b.rating - a.rating)
+    }
+    //펑점 낮은순 버튼
+    if(state.sortType === "descending") {
+        result = result.slice().sort((a,b) => a.rating - b.rating)
+    }
+    //키보드 인풋 상황
+    if(state.searchKeyword) {
+        result = result.slice().filter((movie) => movie.title.toLowerCase().includes(state.searchKeyword))
+    }
+
+    renderMovies(result)
+}
 
 // 넷플릭스 영화 보기 버튼
 const netflixButton = document.getElementById("netflixButton")
 netflixButton.addEventListener("click", () => {
-    currentMovies = movies.filter((movie) => movie.isNetflix)
-    renderMovies(currentMovies)
+    setNetfilxOnly(true)
 })
 
 //전체 영화 보기 버튼
 const entireMovieButton = document.getElementById("entireMovieButton")
 entireMovieButton.addEventListener("click", () => {
-    currentMovies = movies
-    renderMovies(currentMovies)
+    setNetfilxOnly(false)
 })
 
 //평점 낮은 순 버튼
 const lowestRatingButton = document.getElementById("lowestRating")
 lowestRatingButton.addEventListener("click", () => {
-    currentMovies = currentMovies.slice().sort(function(a,b) {
-        return a.rating - b.rating
-    })
-    renderMovies(currentMovies)
+    setSortType("descending")
 })
 
 //평점 높은 순
 const highestRatingButton = document.getElementById("highestRating")
 highestRatingButton.addEventListener("click", () => {
-    currentMovies = currentMovies.slice().sort(function(a,b) {
-        return b.rating - a.rating
-    })
-    renderMovies(currentMovies)
+    setSortType("ascending")
 })
 
 //검색하는 함수(검색 기능)
 function movieSearch() {
     const inputValue = document.getElementById("movieSearch").value.toLowerCase()
-    currentMovies = currentMovies.slice().filter((movie) => movie.title.toLowerCase().includes(inputValue.toLowerCase()))
-    renderMovies(currentMovies)
+    setSearchKeyword(inputValue)
 }
+
+//초기 화면
+function init() {
+    updateView()
+}
+
+init()
